@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SiteSentry — any camera becomes a safety copilot
 
-## Getting Started
+Physical AI track · Nebius x NVIDIA Global AI Hackathon.
 
-First, run the development server:
+Point a phone/laptop camera at a warehouse aisle, stockroom, or workshop.
+Cosmos vision reasoning finds hazards, Nemotron triages + writes the 60-second
+report, Tavily cites the regulation. Shareable evidence pack included.
+
+## Stack (all sponsor tech used functionally)
+
+- **Nebius Token Factory** (OpenAI-compatible) — `nvidia/nemotron-3-super-120b-a12b`
+  scene pass, `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` triage,
+  `nvidia/Nemotron-3-Ultra-550b-a55b` report writer. Runtime call = hackathon requirement.
+- **Tavily** `search` — grounds every report in a live OSHA clause
+  (Best Use of Tavily bonus). Cached citations labeled when offline.
+- **Nebius Serverless-ready** — `Dockerfile` for AI Cloud Endpoints; eval
+  pattern fits Serverless Jobs (see `scripts/eval.sh`).
+
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local   # demo mode works with blank keys
+pnpm install
+pnpm dev                     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+With keys: `NEBIUS_API_KEY` (Token Factory key, starts `v1.`) +
+`TAVILY_API_KEY` switch the pipeline from DEMO to LIVE. Model IDs
+overridable via `MODEL_VLM / MODEL_FAST / MODEL_REASONER`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Demo script (3-min video)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Start scan (warehouse) → capture 2 frames → hazards pop with severity.
+2. Build report → show Tavily OSHA citation + cost/latency footer.
+3. Open `/r/:id` evidence pack on a second phone → assign fix.
 
-## Learn More
+## Verify
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm build
+./scripts/eval.sh   # exercises scan → frames → report API, prints trace
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Apache-2.0. Built Aug–Oct 2026 for the hackathon submission period.
