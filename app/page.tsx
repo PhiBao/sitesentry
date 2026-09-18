@@ -268,12 +268,21 @@ export default function Scanner() {
                     ))}
                   </ul>
                 )}
-                <a
-                  href={`/r/${scan.id}`}
+                <button
+                  onClick={() => {
+                    const json = JSON.stringify(scan);
+                    const b64 = btoa(unescape(encodeURIComponent(json)))
+                      .replace(/\+/g, "-")
+                      .replace(/\//g, "_")
+                      .replace(/=+$/, "");
+                    const url = `${window.location.origin}/r/shared#${b64}`;
+                    void navigator.clipboard?.writeText(url).catch(() => {});
+                    window.open(url, "_blank");
+                  }}
                   className="mt-4 inline-block rounded-full bg-zinc-950 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800"
                 >
                   Open shareable evidence pack →
-                </a>
+                </button>
               </>
             ) : (
               <p className="mt-3 text-sm text-zinc-500">
